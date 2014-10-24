@@ -1,0 +1,11 @@
+# Ignore Movie Files #
+######################
+*.mov
+*.avi
+*.mp4
+*.wmv
+
+
+# Ignore Object Files #
+#######################
+*.o

@@ -26,6 +26,8 @@ using namespace std;
 	int lowV = 0;
 	int highV = 255;
 
+	int sample = 0;//sample rate
+
 	//Create trackbars in "Control" window
 	cvCreateTrackbar("LowH", "Control", &lowH, 179); //Hue (0 - 179)
 	cvCreateTrackbar("HighH", "Control", &highH, 179);
@@ -36,15 +38,19 @@ using namespace std;
 	cvCreateTrackbar("LowV", "Control", &lowV, 255);//Value (0 - 255)
 	cvCreateTrackbar("HighV", "Control", &highV, 255);
 
+
+	cvCreateTrackbar("FrameSampler", "Control", &sample, 50);
+
     while (true)
     {
-        Mat imgOriginal,imgHSV,imgMask;
+        Mat imgOriginal,imgHSV,imgMask,imgRes;
         //Mat imgResize;
         //Size size(100,100);
         //resize(imgOriginal,imgResize, size);
 
         //bool bSuccess = cam.read(imgOriginal); // read a new frame from video
         cam >> imgOriginal;
+
         if(imgOriginal.empty()){
             break;
 		}
@@ -63,8 +69,12 @@ using namespace std;
 		dilate( imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
 		erode(imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
 
-		imshow("Mask", imgMask); //show the thresholded image
-		imshow("Original", imgOriginal); //show the original image
+		bitwise_and(imgOriginal,imgOriginal,imgRes,imgMask);
+
+		imshow("Res",imgRes);
+
+		// imshow("Mask", imgMask); //show the thresholded image
+		// imshow("Original", imgOriginal); //show the original image
 
         if (waitKey(30) == 27){
             break; 
