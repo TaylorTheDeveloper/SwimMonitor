@@ -52,7 +52,7 @@ if __name__ == '__main__':
     import sys, getopt
     print help_message
 
-    cam = cv2.VideoCapture('MVI_7026_1.avi')
+    cam = cv2.VideoCapture('MVI_7026.mp4')
 
     #Open Cam and load our source details
     ret, img = cam.read()
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     src_Area = src_Width * src_Height
 
     #Blur
-    kernel = np.ones((3,3),np.uint8)
+    kernel = np.ones((1,1),np.uint8)
 
     while True:
         ret, img = cam.read()

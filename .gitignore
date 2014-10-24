@@ -4,7 +4,7 @@
 *.avi
 *.mp4
 *.wmv
-
+*.MOV
 
 # Ignore Object Files #
 #######################

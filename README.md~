@@ -12,12 +12,8 @@ How to use:
 2. colorFilter.cpp
 	* Run ./build.sh
 	* Then ./colorFilter
-	* Currently Loops, so you can adjust settings
 
 3. colorFilter.py
 	* Run python colorFilter.py
 
-4. filterBlue.py
-	* Focus on Filtering Blue hues out of images for swimmer segmentation in python
-
-Currently, both of these programs attempt to do the same thing. The Python version runs much faster than the CPP version, however, it's not as accurate. 
+Currently, both of these programs attempt to do the same thing. The Python version runs much faster than the CPP version, however, it's not as accurate.`

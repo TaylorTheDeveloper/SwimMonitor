@@ -1,6 +1,7 @@
 #include <iostream>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <time.h>
 
 using namespace cv;
 using namespace std;
@@ -9,7 +10,9 @@ using namespace std;
  {
     string filename = "MVI_7026_1.avi";// Make arv1, probably should
     //VideoCapture cam(0); //capture the video from web cam
+
 	VideoCapture cam(filename);//Open File
+
     if ( !cam.isOpened() ) { // if not success, exit program
          cout << "Cannot open the web cam or file" << endl;
          return -1;
@@ -40,9 +43,23 @@ using namespace std;
 
 
 	cvCreateTrackbar("FrameSampler", "Control", &sample, 50);
+	int size = 7; //Bloom Size
+	int sizetwo = 3;//Secondary Bloom size
 
-    while (true)
-    {
+	int frameCount = 0;
+
+	time_t start;
+	time(&start);
+    while (true){
+    	// Count Frames
+    	//cout << frameCount << endl;
+    	// frameCount += 1;
+    	// if(frameCount == 510){
+    	// 	frameCount = 0;
+    	// 	cam.release();
+    	// 	cam.open(filename);//Re-open Stream
+    	// }
+
         Mat imgOriginal,imgHSV,imgMask,imgRes;
         //Mat imgResize;
         //Size size(100,100);
@@ -52,6 +69,7 @@ using namespace std;
         cam >> imgOriginal;
 
         if(imgOriginal.empty()){
+    		cam.release();
             break;
 		}
 
@@ -61,26 +79,34 @@ using namespace std;
       
 		//morphological opening (removes small objects from the foreground)
 		//Erode and Expand the edges of the mask to eliminate small artifacts
-		erode(imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-		dilate( imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+		erode(imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(size, size)) );
+		dilate( imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(size, size)) ); 
 
 		//morphological closing
 		//Expand Mask and shrnk mask to smooth edges
-		dilate( imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
-		erode(imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+		dilate( imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(size, size)) ); 
+		erode(imgMask, imgMask, getStructuringElement(MORPH_ELLIPSE, Size(size, size)) );
+
+		bitwise_not(imgMask,imgMask);//InvertMask
 
 		bitwise_and(imgOriginal,imgOriginal,imgRes,imgMask);
 
-		imshow("Res",imgRes);
+		imshow("Res",imgMask);
 
-		// imshow("Mask", imgMask); //show the thresholded image
-		// imshow("Original", imgOriginal); //show the original image
+//		imshow("Mask", imgMask); //show the thresholded image
+//		imshow("Original", imgOriginal); //show the original image
 
-        if (waitKey(30) == 27){
+        if ((char)waitKey(10) == 27){
+    		cam.release();
             break; 
        }
 
     }
+
+    time_t end;
+    time(&end);
+    double seconds = end - start;
+    cout << start << endl << end << endl << seconds << endl;
 
    return 0;
 }
