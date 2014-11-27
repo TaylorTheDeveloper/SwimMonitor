@@ -78,8 +78,8 @@ if __name__ == '__main__':
         imgMask = cv2.erode(imgMask, kernel, iterations=1)
         imgMask = cv2.dilate(imgMask, kernel, iterations=1)
 
-        #morphological closing
-        #Erode and Expand the edges to smooth edges
+        #morphological opening (removes small objects from the foreground)
+        #Erode and Expand the edges of the mask to eliminate small artifacts
         imgMask = cv2.dilate(imgMask, kernel, iterations=1)
         imgMask = cv2.erode(imgMask, kernel, iterations=1)
 

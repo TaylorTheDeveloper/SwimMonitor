@@ -9,12 +9,12 @@ https://drive.google.com/folderview?id=0BwK-dcuoOzfdUlhnZC1rODRzVFk&usp=sharing
 How to use:
 
 1. Make sure you have openCV installed. I'm using version 2.4.9.
-2. colorFilter.cpp
+2. old/colorFilter.cpp
 	* Run ./build.sh
 	* Then ./colorFilter
 	* Currently Loops, so you can adjust settings
 
-3. colorFilter.py
+3. old/colorFilter.py
 	* Run python colorFilter.py
 
 4. filterBlue.py
