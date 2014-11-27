@@ -1,3 +1,10 @@
+/*
+Taylor Brockhoeft
+First working implementation of color (HSV colorspace) based image segmentation
+
+
+*/
+
 #include <iostream>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"

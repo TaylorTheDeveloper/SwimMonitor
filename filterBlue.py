@@ -1,3 +1,21 @@
+# filterBlue.py
+# Taylor Brockhoeft
+#
+# Ported From Origional C++ code colorFilter.cpp which does the same thing, only in C++
+# The Process is somewhat different, I make use of numpy arrays
+#
+# This Program Outlines how it's possible to use the deep
+# blue colors of the pool, agregate them, and then create
+# a mask which allows us to segment the swimmers from the water.
+#
+# It requires a certain degree of calibration, depending on the hues of blue.
+# Implementing a trackbar is trivially easy, so for now, this program will be hardcoded. 
+# In colorfilter.cpp, you can see how the trackbars affect the mask. In colorFilter.py, 
+# the first attempt to re-write this program, you can see good examples on how to implement
+# a trackbar.
+# 
+#
+
 import cv2
 import numpy as np
 
@@ -5,7 +23,8 @@ import numpy as np
 cap = cv2.VideoCapture('MVI_7026.mp4')
 
 #Blur
-kernel = np.ones((3,3),np.uint8)
+kernel = np.ones((5,5),np.uint8)
+finekernel = np.ones((3,3),np.uint8)
 
 while(1):
 

@@ -36,9 +36,9 @@ def set_scale_v_l(val):
     v_l = val
 
 cv2.createTrackbar('H_l', 'control', 0, 179, set_scale_h_l)
-cv2.createTrackbar('H_u', 'control', 105, 179, set_scale_h_u)
+cv2.createTrackbar('H_u', 'control', 130, 179, set_scale_h_u)
 
-cv2.createTrackbar('S_l', 'control', 95, 255, set_scale_s_l)
+cv2.createTrackbar('S_l', 'control', 40, 255, set_scale_s_l)
 cv2.createTrackbar('S_u', 'control', 255, 255, set_scale_s_u)
 
 cv2.createTrackbar('V_l', 'control', 0, 255, set_scale_v_l)
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     src_Area = src_Width * src_Height
 
     #Blur
-    kernel = np.ones((1,1),np.uint8)
+    kernel = np.ones((3,3),np.uint8)
 
     while True:
         ret, img = cam.read()
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         imgMask = cv2.dilate(imgMask, kernel, iterations=1)
         imgMask = cv2.erode(imgMask, kernel, iterations=1)
 
-        cv2.imshow('img',img)
+        #cv2.imshow('img',img)
         cv2.imshow('imgMask',imgMask)
 
 
