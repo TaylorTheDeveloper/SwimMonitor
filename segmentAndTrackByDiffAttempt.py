@@ -2,10 +2,9 @@
 # Taylor Brockhoeft
 #
 # This program attempts to segment, and then track, swimmers in a pool.
-# Current Status: Gets Swimmers. Gets a lot of artifacts as well, takes a performance hit.
-#
-# May need to go about it a different way. This method attempts to get the differences to determine motion
-# 
+# Current Status: not working
+
+# Using Differental Images to detect motion
 #
 
 import cv2
@@ -27,10 +26,18 @@ def nothing(*arg, **kw):
     """Null Function for trackbar"""
     pass
 
+def draw_motion_comp(vis, (x, y, w, h), angle, color):
+    """Visually isolates where movement is occuring"""
+    cv2.rectangle(vis, (x, y), (x+w, y+h), (0, 255, 0))
+    r = min(w/2, h/2)
+    cx, cy = x+w/2, y+h/2
+    angle = angle*np.pi/180
+    cv2.circle(vis, (cx, cy), r, color, 3)
+    cv2.line(vis, (cx, cy), (int(cx+np.cos(angle)*r), int(cy+np.sin(angle)*r)), color, 3)
 
-def draw_rect(frame, (x, y, w, h)):
-    """Visually isolates where movement is occuring. It's a rectangle"""
-    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
+def crop(frame):
+    """Crops an Image""" 
+    return frame[100:100, 100:100]
 
 
 def segment(frame):
@@ -68,43 +75,29 @@ def segment(frame):
 
 #cap = cv2.VideoCapture(0)
 cap = cv2.VideoCapture('MVI_7026.mp4')
-cv2.namedWindow('swimtracker')
-cv2.createTrackbar('threshold', 'swimtracker', DEFAULT_THRESHOLD, 255, nothing)
 
 ret, frame = cap.read()
-#h, w = frame.shape[:2]
-prev_frame = frame.copy()
-prev_frame = segment(prev_frame)
-h, w = frame.shape[:2]
-motion_history = np.zeros((h, w), np.float32)
-hsv = np.zeros((h, w, 3), np.uint8)
-hsv[:,:,1] = 255
 
+#frame = segment(frame)
+
+t_prev = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+t_current = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+t_next = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+
+count = 0 
 while(1):
+    count = count+1
+    if(count%1==0):
+        cv2.imshow( "result", diffImg(t_prev, t_current, t_next)*20 )
 
-    # Take each frame
-    ret, frame = cap.read()
+        # Take each frame
+        ret, frame = cap.read()
+        #frame = segment(frame)
 
-    frame = segment(frame)
-
-
-    frame_diff = cv2.absdiff(frame, prev_frame)
-    gray_diff = cv2.cvtColor(frame_diff, cv2.COLOR_BGR2GRAY)#
-    thrs = cv2.getTrackbarPos('threshold', 'swimtracker')
-    ret, motion_mask = cv2.threshold(gray_diff, thrs, 1, cv2.THRESH_BINARY)
-    timestamp = cv2.getTickCount() / cv2.getTickFrequency()
-    cv2.updateMotionHistory(motion_mask, motion_history, timestamp, MHI_DURATION)
-    mg_mask, mg_orient = cv2.calcMotionGradient( motion_history, MAX_TIME_DELTA, MIN_TIME_DELTA, apertureSize=5 )
-    seg_mask, seg_bounds = cv2.segmentMotion(motion_history, timestamp, MAX_TIME_DELTA)
-
-    for i, rect in enumerate([(0, 0, w, h)] + list(seg_bounds)):
-        x, y, rw, rh = rect
-        area = rw*rh
-        if area < 4**2:
-            continue
-        draw_rect(frame,rect)
-
-    cv2.imshow('result',frame)
+        # Read next image
+        t_prev = t_current
+        t_current = t_next
+        t_next = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 
     if 0xFF & cv2.waitKey(5) == 27:
         break
